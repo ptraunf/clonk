@@ -1,8 +1,7 @@
 use std::mem::zeroed;
 use clap::{Arg, ArgAction, Command};
 use clap::builder::PossibleValue;
-// use clap::parser::ValueSource::DefaultValue;
-use chrono::{Datelike, DateTime, Timelike, TimeZone};
+use chrono::{DateTime, TimeZone};
 use chrono::Local;
 
 struct Clock;
@@ -71,7 +70,9 @@ impl Clock {
     }
 }
 
-const ABOUT: &str = "Bonk Clonk - Gets and (maybe) Sets the time";
+
+
+const ABOUT: &str = "Clonk - Gets and (maybe) Sets the time";
 const RFC_2822: &str = "rfc2822";
 const RFC_3339: &str = "rfc3339";
 const TIMESTAMP: &str = "timestamp";
@@ -87,6 +88,7 @@ fn main() {
                 PossibleValue::new("set")
             ])
             .default_value("get")
+
         )
         .arg(
             Arg::new("std")
@@ -104,7 +106,7 @@ fn main() {
             Arg::new("datetime")
                 .help("When <action> is 'set', apply <datetime>. Otherwise, ignore")
                 .required(false)
-                .last(true)
+                // .last(true)
         ).get_matches();
     let action = args.get_one::<String>("action").unwrap();
     let std = args.get_one::<String>("std").unwrap();
@@ -119,6 +121,16 @@ fn main() {
         let err_msg = format!("Unable to parse {} according to {}", t_, std);
         let t = parser(t_).expect(&err_msg);
         Clock::set(t);
+
+        let maybe_error = std::io::Error::last_os_error();
+        let os_error_code = &maybe_error.raw_os_error();
+
+        match os_error_code {
+            Some(0) => (),
+            // Some(_) => eprintln!("Unable to set the time: {:?}", maybe_error),
+            Some(_) => eprintln!("Unable to set the time: {}", maybe_error.to_string()),
+            None => (),
+        }
     }
     let now = Clock::get();
     match std.as_str() {
