@@ -25,7 +25,6 @@ $ clonk get
 ```
 Changing system time can cause problems, like SSL certs being erroneously rejected as expired. I recommend running the `set` command in a virtual machine - see Appendix B below.
 # Appendix
-## A. Representing Time
 ## A. About NTP
 Two Modes: *always on* and *request/response*.
 Always on: multiple computers work in p2p fashion to converge on an agreed definition of now.
